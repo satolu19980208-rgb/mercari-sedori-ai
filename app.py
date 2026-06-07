@@ -317,40 +317,65 @@ if st.session_state.ai_result:
             ""
         )
     )
+st.divider()
+    
+# --------------------
+# 相場検索
+# --------------------
 
-    st.divider()
+st.subheader("🔎 相場検索")
 
-    detected_name = result.get(
-        "product_name",
-        ""
+default_search_word = (
+    product_name
+    or model
+)
+
+if st.session_state.ai_result:
+
+    ai_name = (
+        st.session_state.ai_result.get(
+            "product_name",
+            ""
+        )
     )
 
-    if detected_name:
+    if ai_name:
 
-        st.subheader(
-            "🔎 相場検索"
-        )
+        default_search_word = ai_name
 
-        mercari_url = (
-            f"https://jp.mercari.com/search?keyword={detected_name}"
-        )
+search_word = st.text_input(
+    "検索キーワード",
+    value=default_search_word,
+    key="search_word"
+)
 
-        sold_url = (
-            f"https://jp.mercari.com/search?keyword={detected_name}&status=sold_out"
-        )
+if search_word:
+
+    mercari_url = (
+        f"https://jp.mercari.com/search?keyword={search_word}"
+    )
+
+    sold_url = (
+        f"https://jp.mercari.com/search?keyword={search_word}&status=sold_out"
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
 
         st.link_button(
-            "メルカリ検索",
+            "🛒 メルカリ検索",
             mercari_url
         )
 
+    with col2:
+
         st.link_button(
-            "売り切れ検索",
+            "✅ 売り切れ検索",
             sold_url
         )
 
 st.divider()
-
 # --------------------
 # 利益計算
 # --------------------
