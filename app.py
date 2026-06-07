@@ -345,35 +345,32 @@ if st.session_state.ai_result:
 
 search_word = st.text_input(
     "検索キーワード",
-    value=default_search_word,
-    key="search_word"
+    value=default_search_word
 )
 
-if search_word:
+mercari_url = (
+    f"https://jp.mercari.com/search?keyword={search_word}"
+)
 
-    mercari_url = (
-        f"https://jp.mercari.com/search?keyword={search_word}"
+sold_url = (
+    f"https://jp.mercari.com/search?keyword={search_word}&status=sold_out"
+)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.link_button(
+        "🛒 メルカリ検索",
+        mercari_url,
+        disabled=(search_word == "")
     )
 
-    sold_url = (
-        f"https://jp.mercari.com/search?keyword={search_word}&status=sold_out"
+with col2:
+    st.link_button(
+        "✅ 売り切れ検索",
+        sold_url,
+        disabled=(search_word == "")
     )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        st.link_button(
-            "🛒 メルカリ検索",
-            mercari_url
-        )
-
-    with col2:
-
-        st.link_button(
-            "✅ 売り切れ検索",
-            sold_url
-        )
 
 st.divider()
 # --------------------
