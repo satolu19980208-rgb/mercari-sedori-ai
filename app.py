@@ -48,6 +48,9 @@ if "uploader_key" not in st.session_state:
 
 if "memo" not in st.session_state:
     st.session_state.memo = ""
+
+if "extra_keyword" not in st.session_state:
+    st.session_state.extra_keyword = ""
 # --------------------
 # タイトル
 # --------------------
@@ -97,17 +100,17 @@ with col1:
 
     product_name = st.text_input(
         "商品名",
-        value=st.session_state.product_name
+        key="product_name"
     )
 
     manufacturer = st.text_input(
         "メーカー",
-        value=st.session_state.manufacturer
+        key="manufacturer"
     )
 
     model = st.text_input(
         "型番",
-        value=st.session_state.model
+        key="model"
     )
 
 with col2:
@@ -326,7 +329,8 @@ st.divider()
 st.subheader("🔎 相場検索")
 
 extra_keyword = st.text_input(
-    "追加キーワード"
+    "追加キーワード",
+    key="extra_keyword"
 )
 
 if model.strip():
@@ -345,31 +349,29 @@ if extra_keyword:
         f" {extra_keyword}"
     )
 
-if search_word:
+mercari_url = (
+    f"https://jp.mercari.com/search?keyword={search_word}"
+)
 
-    mercari_url = (
-        f"https://jp.mercari.com/search?keyword={search_word}"
+sold_url = (
+    f"https://jp.mercari.com/search?keyword={search_word}&status=sold_out"
+)
+
+col1, col2 = st.columns(2)
+
+with col1:
+
+    st.link_button(
+        "🛒 メルカリ検索",
+        mercari_url
     )
 
-    sold_url = (
-        f"https://jp.mercari.com/search?keyword={search_word}&status=sold_out"
+with col2:
+
+    st.link_button(
+        "✅ 売り切れ検索",
+        sold_url
     )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        st.link_button(
-            "🛒 メルカリ検索",
-            mercari_url
-        )
-
-    with col2:
-
-        st.link_button(
-            "✅ 売り切れ検索",
-            sold_url
-        )
 
 st.divider()
 # --------------------
@@ -550,11 +552,14 @@ if st.button("🆕 次の商品"):
         "buy_price",
         "sell_price",
         "memo",
-        "ai_result"
+        "ai_result",
+        "extra_keyword"
     ]:
 
-        if key in st.session_state:
-            del st.session_state[key]
+        st.session_state.pop(
+            key,
+            None
+        )
 
     st.session_state.uploader_key += 1
 
