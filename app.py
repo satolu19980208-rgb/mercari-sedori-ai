@@ -325,52 +325,51 @@ st.divider()
 
 st.subheader("🔎 相場検索")
 
-default_search_word = (
-    product_name
-    or model
+extra_keyword = st.text_input(
+    "追加キーワード"
 )
 
-if st.session_state.ai_result:
+if model.strip():
 
-    ai_name = (
-        st.session_state.ai_result.get(
-            "product_name",
-            ""
+    search_word = model
+
+else:
+
+    search_word = (
+        f"{manufacturer} {product_name}"
+    ).strip()
+
+if extra_keyword:
+
+    search_word += (
+        f" {extra_keyword}"
+    )
+
+if search_word:
+
+    mercari_url = (
+        f"https://jp.mercari.com/search?keyword={search_word}"
+    )
+
+    sold_url = (
+        f"https://jp.mercari.com/search?keyword={search_word}&status=sold_out"
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.link_button(
+            "🛒 メルカリ検索",
+            mercari_url
         )
-    )
 
-    if ai_name:
+    with col2:
 
-        default_search_word = ai_name
-
-search_word = st.text_input(
-    "検索キーワード",
-    value=default_search_word
-)
-
-mercari_url = (
-    f"https://jp.mercari.com/search?keyword={search_word}"
-)
-
-sold_url = (
-    f"https://jp.mercari.com/search?keyword={search_word}&status=sold_out"
-)
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.link_button(
-        "🛒 メルカリ検索",
-        mercari_url,
-        disabled=(search_word == "")
-    )
-
-with col2:
-    st.link_button(
-        "✅ 売り切れ検索",
-        sold_url,
-        disabled=(search_word == "")
-    )
+        st.link_button(
+            "✅ 売り切れ検索",
+            sold_url
+        )
 
 st.divider()
 # --------------------
